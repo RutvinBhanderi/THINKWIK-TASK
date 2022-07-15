@@ -26,10 +26,27 @@ const postSlice = createSlice({
     createPost: (state, action) => {
       state.posts.push(action.payload);
     },
+    fetchSuccess: (state) => {
+      state.isFetching = false;
+    },
+    fetchStart: (state) => {
+      state.isFetching = true;
+    },
+    fetchFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 
-export const { getPosts, fetchUpdatePost, fetchDeletePost, createPost } =
-  postSlice.actions;
+export const {
+  getPosts,
+  fetchUpdatePost,
+  fetchDeletePost,
+  createPost,
+  fetchSuccess,
+  fetchStart,
+  fetchFailure,
+} = postSlice.actions;
 
 export default postSlice.reducer;

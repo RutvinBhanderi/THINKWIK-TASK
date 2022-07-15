@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { addPost, updatePost } from "../Reducer/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import userSlice from "../Reducer/userSlice";
+import Loader from "./Loader";
 const Conatiner = styled.div`
   width: 100%;
   display: flex;
@@ -34,6 +34,7 @@ const CreatePost = () => {
     message: "",
     name: "",
   });
+  const { isFetching, error } = useSelector((state) => state.post);
   const { user } = useSelector((state) => state.user);
   const post = useSelector((state) =>
     params.id ? state.post.posts.find((p) => p._id === params.id) : null
@@ -67,30 +68,34 @@ const CreatePost = () => {
 
   return (
     <Conatiner>
-      <Wrapper>
-        <Title>{params.id ? "update post" : "create post"}</Title>
-        <Form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            name='title'
-            value={formData.title}
-            onChange={handleChange}
-          />
-          <input
-            type='text'
-            name='message'
-            value={formData.message}
-            onChange={handleChange}
-          />
-          <input
-            type='text'
-            name='name'
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <button>Submit</button>
-        </Form>
-      </Wrapper>
+      {isFetching ? (
+        <Loader />
+      ) : (
+        <Wrapper>
+          <Title>{params.id ? "update post" : "create post"}</Title>
+          <Form onSubmit={handleSubmit}>
+            <input
+              type='text'
+              name='title'
+              value={formData.title}
+              onChange={handleChange}
+            />
+            <input
+              type='text'
+              name='message'
+              value={formData.message}
+              onChange={handleChange}
+            />
+            <input
+              type='text'
+              name='name'
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <button>Submit</button>
+          </Form>
+        </Wrapper>
+      )}
     </Conatiner>
   );
 };

@@ -11,6 +11,9 @@ import {
   fetchDeletePost,
   fetchUpdatePost,
   getPosts,
+  fetchFailure,
+  fetchStart,
+  fetchSuccess,
 } from "./postSlice";
 import axios from "axios";
 
@@ -38,43 +41,60 @@ export const register = async (dispatch, user, navigate) => {
 };
 
 export const fetchAllPosts = async (dispatch, page) => {
+  dispatch(fetchStart());
   try {
     const res = await axios.get(`http://localhost:5000/posts?page=${page}`);
     console.log(res.data);
     dispatch(getPosts(res.data));
+    dispatch(fetchSuccess());
   } catch (error) {
+    dispatch(fetchFailure());
     console.log(error);
   }
 };
 
 export const updatePost = async (dispatch, id, post) => {
+  dispatch(fetchStart());
   try {
-    const res = await axios.patch(`http://localhost:5000/posts/${id}`, post);
+    const res = await axios.patch(
+      `http://localhost:5000/posts/${id}/updatePost`,
+      post
+    );
     console.log(res.data);
     dispatch(fetchUpdatePost(res.data));
+    dispatch(fetchSuccess());
   } catch (error) {
     console.log(error);
+    dispatch(fetchFailure());
   }
 };
 
 export const deletePost = async (dispatch, id) => {
+  dispatch(fetchStart());
   try {
     const res = await axios.delete(
       `http://localhost:5000/posts/${id}/deletePost`
     );
     console.log(res);
     dispatch(fetchDeletePost(id));
+    dispatch(fetchSuccess());
   } catch (error) {
     console.log(error);
+    dispatch(fetchFailure());
   }
 };
 
 export const addPost = async (dispatch, post) => {
-  try {
-    const res = await axios.post(`http://localhost:5000/posts`, post);
-    console.log(res);
-    dispatch(createPost(post));
-  } catch (error) {
-    console.log(error);
-  }
+  dispatch(fetchStart());
+  setTimeout(async () => {
+    try {
+      const res = await axios.post(`http://localhost:5000/posts`, post);
+      console.log(res);
+      dispatch(createPost(post));
+      dispatch(fetchSuccess());
+    } catch (error) {
+      console.log(error);
+      dispatch(fetchFailure());
+    }
+  }, 3000);
 };
